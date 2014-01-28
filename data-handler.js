@@ -1,6 +1,7 @@
 function loadDataIntoViz(json_data){
   var svg0 = d3.select("#gary_chart").append("svg:svg")
-      .attr({"width":1400,"height":600});
+      .attr({"id":"d3-svg","width":1400,"height":600});
+  $("#d3-svg").empty();
 
   var myChart = chart().topText("Skipped days")
     .bottomText("Session")
