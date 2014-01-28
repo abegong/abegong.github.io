@@ -5,14 +5,6 @@ function getDaysInMonth(m, y) {
   return /8|3|5|10/.test(--m)?30:m==1?(!(y%4)&&y%100)||!(y%400)?29:28:31;
 }
 
-var svg0 = d3.select("#gary_chart").append("svg:svg")
-      .attr({"width":1400,"height":600});
-var svg1 = d3.select("#runkeeper_chart").append("svg:svg")
-      .attr({"width":1400,"height":600});
-var svg2 = d3.select("#foursquare_chart").append("svg:svg")
-      .attr({"width":1400,"height":600});
-
-
 function chart() {
   var topText, bottomText, accessor;
   function my(selection) {
