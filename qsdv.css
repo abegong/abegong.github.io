@@ -1,0 +1,14 @@
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #aaa;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-size: 12px;
+}
+
+.bigcaption {
+  font-size: 20px;
+}
