@@ -1,4 +1,8 @@
 function loadDataIntoViz(json_data){
+  za = json_data;
+  console.log(json_data);
+  
+  //Clear the visualization if it's not already empty
   $("#d3-svg").empty();
 
   var svg0 = d3.select("#d3-svg");
@@ -19,7 +23,6 @@ function handleFileSelect(evt) {
           var text_data = e.target.result;
           var json_data = d3.csv.parse(text_data);
           // var json_data = JSON.parse(text_data);
-          // console.log(json_data);
           loadDataIntoViz(json_data);
       };
   })(filename);

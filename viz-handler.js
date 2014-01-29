@@ -37,7 +37,8 @@ function chart() {
 
       var months = this.append("g");
 
-      var foo = d3.nest().key(function(d) { return d3.time.month(new Date(d.time)) })
+      //var
+      foo = d3.nest().key(function(d) { return d3.time.month(new Date(d.time)) })
         .key(function(d) { return d3.time.day(new Date(d.time)) })
         .rollup(function(arr) {
           return d3.sum(arr, function(e) { return e[accessor] })
@@ -72,15 +73,18 @@ function chart() {
 
       this.selectAll(".time.axis").call(axis);
       var month_g = months.selectAll(".month").data(foo).enter().append("g").attr("class", "month")
-        .attr("transform", function(d) { return "translate(" + (timeScale(new Date(d.key))) + ",0)"; })
-      month_g.selectAll(".zeroes").data(function(d) { return d.missing_days }).enter().append("circle").attr("r",3)
-        .attr("cy", function(d,i) { return 180 - i * 7} ).style("fill", "#BE1336").style("stroke", "#741E2C");
+        .attr("transform", function(d) { return "translate(" + (timeScale(new Date(d.key))) + ",0)"; });
+
+      month_g.selectAll(".zeroes").data(function(d) { return d.missing_days }).enter().append("circle").attr("r",2.5)
+        .attr("cy", function(d,i) { return 180 - i * 6} ).style("fill", "#BE1336").style("stroke", "#741E2C");
+      
       month_g.append("rect").attr("class","bar").attr("width",8)
         .attr("height", function(d) { return medMinutesScale(d.avg) })
         .attr("x", -4)
         .attr("y", function(d) { return 280 - medMinutesScale(d.avg) })
         .style("fill", "#403075");
-      month_g.append("rect").attr("y",20).attr("height", 280).style("fill", "steelblue").attr("width", 18).attr("x", -9).style("opacity",0).attr("rx",6).attr("ry",6)
+      
+      month_g.append("rect").attr("y",0).attr("height", 290).style("fill", "steelblue").attr("width", 18).attr("x", -9).style("opacity",0).attr("rx",6).attr("ry",6)
       .on("mouseover", function(d) { 
         var session_minutes = d3.round(d.avg,2);
         var days_skipped = d.missing_days.length;
@@ -91,7 +95,7 @@ function chart() {
         var yea =  dat.getFullYear();
         bigcaption.text(days_skipped + " days skipped, " + session_minutes + " minutes/day in " + mon  + " " + yea)
        })
-      .on("mouseout", function() { d3.select(this).transition().duration(300).style("opacity",0) });
+      .on("mouseout", function() { d3.select(this).transition().duration(50).style("opacity",0) });
     })
   }
   my.topText = function(value) { topText = value; return this; }
