@@ -27,6 +27,7 @@ function chart() {
           } 
         }
       );
+
       var mainChartWAxis = this.append("g").attr("transform","translate(0,180)")
       mainChartWAxis.append("g")
         .attr("transform", "translate(0,10)")

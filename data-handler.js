@@ -1,17 +1,59 @@
-function loadDataIntoViz(json_data){
-  za = json_data;
-  console.log(json_data);
-  
+function genAlertBox(cleaned_json_data, bad_rows){
+  var alert_box = $("#alert-prototype").clone().hide();
+  if( cleaned_json_data.length > 0 ){
+    if( bad_rows.length > 0 ){
+//      var message = "[Sad trombone]";
+      var message = "Your file successfully loaded "+cleaned_json_data.length+" rows, but also had "+bad_rows.length+" bad rows.";
+      alert_box.addClass("warning")
+    } else {
+      alert_box.addClass("success")
+      var message = "Your file successfully loaded, with "+cleaned_json_data.length+" rows.";
+    }
+  } else {
+    var message = "Your file did not load.  Please check the formatting requirements and try again.";
+//    var message = "[Sad trombone]";
+    alert_box.addClass("warning")
+  }
+
+  alert_box
+    .html(message)
+    .slideDown()
+    .append('<a href="#" class="close">&times;</a>');
+  $('a', alert_box).click(function(){
+    $(this).parent().slideUp(
+      400,
+      function(){$(this).remove()}
+    );
+  })
+  $("body").prepend(alert_box);
+
+};
+
+function loadDataIntoViz(json_data, filename, gen_alert_box){
+  var cleaned_json_data = [];
+  var bad_rows = [];
+  for( j in json_data ){
+    var new_date = new Date(json_data[j]["time"]);
+    if( !isNaN(new_date) ){
+      cleaned_json_data.push(json_data[j]);
+    } else {
+      bad_rows.push( {"row":j, "contents":json_data[j]} );
+    }
+  }
+
+  if( gen_alert_box ){
+    genAlertBox(cleaned_json_data, bad_rows);
+  }
+
   //Clear the visualization if it's not already empty
   $("#d3-svg").empty();
-
-  var svg0 = d3.select("#d3-svg");
 
   var myChart = chart().topText("Skipped days")
     .bottomText("Session")
     .accessor("minutes");
 
-  d3.select(svg0).datum(json_data).call(myChart);
+  var svg0 = d3.select("#d3-svg");
+  d3.select(svg0).datum(cleaned_json_data).call(myChart);
 };
 
 function handleFileSelect(evt) {
@@ -23,7 +65,7 @@ function handleFileSelect(evt) {
           var text_data = e.target.result;
           var json_data = d3.csv.parse(text_data);
           // var json_data = JSON.parse(text_data);
-          loadDataIntoViz(json_data);
+          loadDataIntoViz(json_data, filename, true);
       };
   })(filename);
 
@@ -39,6 +81,6 @@ $(document).ready(function(){
     .attr({"id":"d3-svg","width":1400,"height":600});
 
   d3.json('data/garys_meditation_data.json', function(json_data) {
-    loadDataIntoViz(json_data);
+    loadDataIntoViz(json_data, "garys_meditation_data.json", false);
   });
 });
