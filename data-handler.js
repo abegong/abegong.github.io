@@ -56,6 +56,37 @@ function loadDataIntoViz(json_data, filename, gen_alert_box){
   d3.select(svg0).datum(cleaned_json_data).call(myChart);
 };
 
+// Take only the first n columns of a CSV file and discard everything else.
+// Assumes that the colums to be retained are numeric or date - not arbitrary strings.
+// Adds a header if needed.
+// Transformes a newline separated string into another newline separated string.
+function processEquanimityCSV(text) {
+  var inputArray = text.split('\n');
+  
+  // truncate at the required number of columns
+  var filteredArray = inputArray.map(function (row) {
+    return row.split(',', 2).join(',');
+  });
+  
+  // drop lines that do not contain the required number of columns
+  var filteredArray = filteredArray.filter(function (row) {
+    return (row.split(',').length === 2); 
+  });
+  
+  // drop lines that do not start with a number
+  var filteredArray = filteredArray.filter(function (row) {
+    return "0123456789".indexOf(row.charAt(0)) >= 0;
+  });
+  
+  // add a header if necessary
+  if (filteredArray[0].indexOf("time") === -1) {
+     filteredArray.unshift("time,minutes");
+  }
+  
+  output = filteredArray.join('\n');
+  return output;
+}
+
 function handleFileSelect(evt) {
   var filename = evt.target.files[0];
     
@@ -63,7 +94,8 @@ function handleFileSelect(evt) {
   reader.onload = (function(theFile) {
       return function(e) {
           var text_data = e.target.result;
-          var json_data = d3.csv.parse(text_data);
+          var trimmed_data = processEquanimityCSV(text_data);
+          var json_data = d3.csv.parse(trimmed_data);
           // var json_data = JSON.parse(text_data);
           loadDataIntoViz(json_data, filename, true);
       };
